@@ -5,7 +5,7 @@ a raspberry pi project with e-Ink display that employs 3 Ic2 sensors to monitor 
 
 The display includes, Temperature, Humitity, Lux, and Pressure graph.  It also includes Wifi Strength and battery Level, as well as the date time the display was updated (since e-ink does not require power to run)
 
-[Powered by Solar Cell](https://www.amazon.com/gp/product/B01MCXZJ8Y/ref=ppx_yo_dt_b_asin_title_o05_s00?ie=UTF8&psc=1)
+[Powered by Solar Cell](https://www.amazon.com/gp/product/B01MCXZJ8Y/ref=ppx_yo_dt_b_asin_title_o05_s00?ie=UTF8&psc=1) and 
 [Packaged in waterproof case](https://www.amazon.com/gp/product/B07C97HXX8/ref=ppx_yo_dt_b_asin_title_o00_s00?ie=UTF8&psc=1)
 
 ## dependancies
