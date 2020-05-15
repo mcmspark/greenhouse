@@ -3,6 +3,8 @@ a raspberry pi project with e-Ink display that employs 3 Ic2 sensors to monitor 
 
 ![alt text](https://raw.githubusercontent.com/mcmspark/greenhouse/master/currentDisplay.png)
 
+The display includes, Temperature, Humitity, Lux, and Pressure graph.  It also includes Wifi Strength and battery Level, as well as the date time the display was updated (since e-ink does not require power to run)
+
 ## dependancies
 This Python display is for the [Pimeroni Inky pHAT](https://learn.pimoroni.com/tutorial/sandyj/getting-started-with-inky-phat)
 It also uses 3 Adafruit sensors
@@ -18,3 +20,15 @@ pip3 install adafruit-blinka
 sudo pip3 install adafruit-circuitpython-veml7700
 sudo pip3 install adafruit-circuitpython-ads1x15
 ```
+
+## improvements
+I followed [this guide](https://www.jeffgeerling.com/blogs/jeff-geerling/raspberry-pi-zero-conserve-energy) to reduce power consumption on the Pi Zero W
+```
+/usr/bin/tvservice -o
+echo none | sudo tee /sys/class/leds/led0/trigger
+echo 1 | sudo tee /sys/class/leds/led0/brightness
+```
+
+I also [diabled bluetooth](https://scribles.net/disabling-bluetooth-on-raspberry-pi/)
+
+
