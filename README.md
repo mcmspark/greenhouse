@@ -48,4 +48,10 @@ sudo systemctl disable bluealsa.service
 sudo systemctl disable bluetooth.service
 ```
 
+## power
+I scavenged a charge/regulator from a USB powerbank
+![USB regulator](https://raw.githubusercontent.com/mcmspark/greenhouse/master/image2.jpg)
+and hooked it to 2 3.7v Lithium cells in parallel (18650)
+
+On sunny days the solar cell fully charges the batteries, but in the spring and fall I sometimes have to charge it.
 
