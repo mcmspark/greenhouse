@@ -33,5 +33,19 @@ echo 1 | sudo tee /sys/class/leds/led0/brightness
 ```
 
 I also [diabled bluetooth](https://scribles.net/disabling-bluetooth-on-raspberry-pi/)
+```
+sudo nano /boot/config.txt
+```
+Add below, save and close the file.
+```
+# Disable Bluetooth
+dtoverlay=pi3-disable-bt
+```
+Disable related services.
+```
+sudo systemctl disable hciuart.service
+sudo systemctl disable bluealsa.service
+sudo systemctl disable bluetooth.service
+```
 
 
