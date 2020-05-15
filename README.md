@@ -1,6 +1,6 @@
 # greenhouse
 a raspberry pi project with e-Ink display that employs 3 Ic2 sensors to monitor my greenhouse
-![running in the greenhouse](https://raw.githubusercontent.com/mcmspark/greenhouse/master/image3.png)
+![running in the greenhouse](https://raw.githubusercontent.com/mcmspark/greenhouse/master/image3.jpg)
 ![e-ink display](https://raw.githubusercontent.com/mcmspark/greenhouse/master/currentDisplay.png)
 
 The display includes, Temperature, Humitity, Lux, and Pressure graph.  It also includes Wifi Strength and battery Level, as well as the date time the display was updated (since e-ink does not require power to run)
