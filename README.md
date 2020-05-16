@@ -55,3 +55,15 @@ and hooked it to 2 3.7v Lithium cells in parallel ([18650](https://www.18650batt
 
 On sunny days the solar cell fully charges the batteries, but in the spring and fall I sometimes have to charge it.
 
+## running
+Edit /etc/rc.local and add
+```
+/usr/bin/tvservice -o
+
+cd /home/pi/GreenHouse
+python3 GreenHouse.py &
+```
+then reboot.
+
+The display is available on the e-Ink and on a webpage on port 8080  http://greenhouse:8080
+
