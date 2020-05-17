@@ -46,7 +46,7 @@ def drawPressure(draw,x,y,x2,y2,data):
  for i in range(0,count):
    total=0
    for j in range(0,smoothing):
-   	total=total+float(data[i*smoothing+j][3])
+   	total=total+float(data[i*smoothing+j]["press"])
    pressureList.append(total/smoothing)
  maxP=max(pressureList)
  minP=min(pressureList)

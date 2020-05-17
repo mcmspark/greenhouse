@@ -39,6 +39,9 @@ def getWiFiStrength():
 
 measurement = namedtuple("measurement","time temp humid press lux batt wifi")
 
+def tempInF(temperature):
+  return temperature * 9 / 5 + 32
+
 def getMeasurements():
   timestr=time.strftime('%I:%M%p %b %d, %Y')
   temperature,pressure,humidity = bme280.readBME280All()
@@ -50,7 +53,7 @@ def getMeasurements():
   wifiStrength=getWiFiStrength()
 #  4.09 = full 3.1 = empty
 # print(chan.value, chan.voltage)
-  return measurement(timestr, str(round(tempF,1)), str(round(humidity,1)), str(round(inHg,6)), str(round(lux,1)) if lux>100 else str(lux) , round(battLevel,1), wifiStrength)
+  return measurement(timestr, str(round(temperature,1)), str(round(humidity,1)), str(round(pressure,6)), str(round(lux,1)) if lux>100 else str(lux) , round(battLevel,1), wifiStrength)
 
 if __name__ == '__main__':
   print(getMeasurements())
