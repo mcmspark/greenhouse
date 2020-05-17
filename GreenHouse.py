@@ -6,6 +6,9 @@ import time
 import threading
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 
+def systemShutdown():
+  subprocess.call("sudo shutdown -h now", shell=True)
+
 def turnOffTheActLight(state):
   if state :
     cmd = ["./lightoff.sh"]
@@ -50,20 +53,25 @@ class WebServer(threading.Thread):
       webServer.handle_request()
     webServer.server_close()
     print("Server Shutdown")
-
+#measurement = namedtuple("measurement","time temp humid press lux batt wifi")
 class MyServer(SimpleHTTPRequestHandler):
     def do_GET(self):
       try:
         if self.path == '/':
             self.path = 'index.html'
+        if self.path == '/measure':
+          measurements=GreenHouseReadSensors.getMeasurements()
+          self.send_response(200)
+          self.send_header("Content-type", "application/json")
+          self.end_headers()
+          retval='{"temperature_C": ' + str(round((float(measurements.temp) - 32.0) / 1.8, 1))
+          retval+= ', "pressure_hPa": ' + str(float(measurements.press)*33.8638)
+          retval+= ', "humidity": ' + measurements.humid 
+          retval+= ', "temperature_F": ' + measurements.temp 
+          retval+= ', "pressure_inHg": ' + measurements.press + '}'
+          self.wfile.write(bytes(retval, 'utf-8'))
+          return
         return SimpleHTTPRequestHandler.do_GET(self)
-        #f = open('currentDisplay.png','rb')
-        #self.send_response(200)
-        #self.send_header("Content-type", "image/png")
-        #self.end_headers()
-        #self.wfile.write(f.read())
-        #f.close()
-        #return
       except IOError:
         self.send_error(404,'File Not Found: %s' % self.path)
 
@@ -76,6 +84,10 @@ def mainLoop(seconds):
       measurements=GreenHouseReadSensors.getMeasurements()
       data = recordHistory(measurements)
       GreenHouseDisplay.updateGreenHouseDisplay(measurements, data)
+      if(measurements.batt<10):
+        serverThread.running=False
+        systemShutdown()
+        break
       time.sleep(int(seconds))
   except (KeyboardInterrupt, SystemExit): #when you press ctrl+c
     print("closing")
