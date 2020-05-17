@@ -64,7 +64,7 @@ def drawLayout(draw, measurements, data ):
  
  drawWifi(draw,(212-16,0),measurements.wifi,1,2)
 
- text=measurements.temp+"F"
+ text=str(round(float(measurements.temp) * 9 / 5 +32.0,1))+"F"
  font=ImageFont.truetype(FredokaOne,64)
  draw.text((0,-15),text,1,font)
  
