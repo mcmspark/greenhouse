@@ -68,12 +68,6 @@ class MyServer(SimpleHTTPRequestHandler):
           self.send_header("Content-type", "application/json")
           self.end_headers()
           self.wfile.write(bytes(json.dumps(measurements._asdict()),'utf-8'))
-          #retval='{"temperature_C": ' + str(round((float(measurements.temp) - 32.0) / 1.8, 1))
-          #retval+= ', "pressure_hPa": ' + str(float(measurements.press)*33.8638)
-          #retval+= ', "humidity": ' + measurements.humid 
-          #retval+= ', "temperature_F": ' + measurements.temp 
-          #retval+= ', "pressure_inHg": ' + measurements.press + '}'
-          #self.wfile.write(bytes(retval, 'utf-8'))
           return
         return SimpleHTTPRequestHandler.do_GET(self)
       except IOError:
@@ -88,14 +82,13 @@ def mainLoop(seconds):
       measurements=GreenHouseReadSensors.getMeasurements()
       data = recordHistory(measurements)
       GreenHouseDisplay.updateGreenHouseDisplay(measurements, data)
-      if(measurements.batt<10):
-        serverThread.running=False
-        systemShutdown()
-        break
       time.sleep(int(seconds))
   except (KeyboardInterrupt, SystemExit): #when you press ctrl+c
     print("closing")
     serverThread.running=False
 
 if __name__ == '__main__':
+  turnOffTheActLight(True)
   mainLoop(300)
+  turnOffTheActLight(False)
+
