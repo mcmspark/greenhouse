@@ -25,6 +25,15 @@ sudo pip3 install adafruit-circuitpython-ads1x15
 ```
 
 ## improvements
+I wanted to echo the display on the InkyPhat to a webpage
+It was not clear in the Pimeroni docs, but adding a pallate I was able to output the image to both the display and to a file.
+```
+inky_display.set_image(img)
+inky_display.show()
+img.putpalette([255,255,255,0,0,0,255,0,0])
+img.save("currentDisplay.png")
+```
+
 I followed [this guide](https://www.jeffgeerling.com/blogs/jeff-geerling/raspberry-pi-zero-conserve-energy) to reduce power consumption on the Pi Zero W
 ```
 /usr/bin/tvservice -o
