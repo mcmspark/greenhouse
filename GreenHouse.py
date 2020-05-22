@@ -52,7 +52,7 @@ class WebServer(threading.Thread):
   def run(self):
     global webServer
     while(self.running):
-      webServer.timeout=10
+      webServer.timeout=60
       webServer.handle_request()
     webServer.server_close()
     print("Server Shutdown")
