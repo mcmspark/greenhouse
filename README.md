@@ -34,7 +34,7 @@ img.putpalette([255,255,255,0,0,0,255,0,0])
 img.save("currentDisplay.png")
 ```
 
-Route port 80 to port 8080 (add this to /etc.rc.local)
+Route port 80 to port 8080 (add this to /etc/rc.local)
 ```
 iptables -t nat -A PREROUTING -i wlan0 -p tcp --dport 80 -j REDIRECT --to-port 8080
 ```
