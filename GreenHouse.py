@@ -9,12 +9,59 @@ from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 def systemShutdown():
   subprocess.call("sudo shutdown -h now", shell=True)
 
-def turnOffTheActLight(state):
-  if state :
-    cmd = ["./lightoff.sh"]
-  else :
-    cmd = ["./lighton.sh"]
+currentWifiState=False
+
+def turnOnTheWifi(state):
+  global currentWifiState
+  if state!=currentWifiState :
+    cmd=["ifconfig","wlan0", "up" if state else "down"]
+    subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    currentWifiState=state
+
+
+def turnOnTheWifi(state):
+  cmd=["ifconfig","wlan0", "up" if state else "down"]
   subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+def turnOffTheActLight(state):
+  if state:
+    trigger='none\n'
+    brightness='1\n'
+  else:
+    trigger='cpu0\n'
+    brightness='0\n'
+  try:
+    with open("/sys/class/leds/led0/trigger","w") as f:
+      f.write(trigger)
+    with open("/sys/class/leds/led0/brightness","w") as f:
+      f.write(brightness)
+  except:
+    print("you must run as root to disable the act light")
+
+
+def wifiPowerSchedule():
+  # disable wifi at night and for the bottom part of the hour
+  tmval = time.localtime()
+  enableWifi=(tmval.tm_hour>5 and tmval.tm_hour<23) and (tmval.tm_min>49 or tmval.tm_min<11)
+  turnOnTheWifi(enableWifi)
+
+def powerSaver(seconds,measurements):
+  if measurements.batt<10.0:
+    # no power
+    turnOnTheWifi(False)
+    return 1800
+  if float(measurements.lux)>100.0:
+    # sun is up
+    turnOnTheWifi(True)
+    return 300
+  if seconds<900 and float(measurements.lux)<10.0:
+    # set seconds to 900 and wait 15 minutes
+    return 900
+  if seconds>800 and float(measurements.lux)<10.0:
+    # it is dark, go into low power mode and only update every 20 miutes
+    turnOnTheWifi(False)
+    return 1200
+
 
 def recordHistory(measurements):
   data = []
@@ -56,6 +103,7 @@ class WebServer(threading.Thread):
       webServer.handle_request()
     webServer.server_close()
     print("Server Shutdown")
+
 #measurement = namedtuple("measurement","time temp humid press lux batt wifi")
 class MyServer(SimpleHTTPRequestHandler):
     def do_GET(self):
@@ -80,12 +128,14 @@ def mainLoop(seconds):
     serverThread.start() # start it up
     while True:
       measurements=GreenHouseReadSensors.getMeasurements()
+      seconds=powerSaver(seconds, measurements)
       data = recordHistory(measurements)
       GreenHouseDisplay.updateGreenHouseDisplay(measurements, data)
       time.sleep(int(seconds))
   except (KeyboardInterrupt, SystemExit): #when you press ctrl+c
     print("closing")
     serverThread.running=False
+  turnOnTheWifi(True)
 
 if __name__ == '__main__':
   turnOffTheActLight(True)
