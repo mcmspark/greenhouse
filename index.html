@@ -1,14 +1,93 @@
 <!doctype html>
 <html lang="en">
-    <head>
-        
-    </head>
-    <body>
-        <div>
-            <h1>Greenhouse</h1>
-        </div>
-        <div>
-            <img src="currentDisplay.png"/>
-        </div>
-    </body>
+
+<head>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+</head>
+
+<body>
+    <div>
+        <h1>Greenhouse</h1>
+    </div>
+    <div>
+        <img src="currentDisplay.png" />
+    </div>
+    <button onclick="drawGraph('temp','red')" style="background-color: red;">temp</button>
+    <button onclick="drawGraph('humid','steelblue')" style="background-color: steelblue;">humid</button>
+    <button onclick="drawGraph('press','orange')" style="background-color: orange;">press</button>
+    <button onclick="drawGraph('lux','violet')" style="background-color: violet;">lux</button>
+    <button onclick="drawGraph('batt','green')" style="background-color: green;">batt</button>
+    <button onclick="drawGraph('wifi','blue')" style="background-color: blue;">wifi</button>
+    <div id="my_dataviz"></div>
+    <script>
+        var origData=[];
+        function getGreenHouseData(url,callback){
+            if(origData.length>0)callback();
+            else d3.json("GreenHouseData.json").then(d=>{
+                console.log("read file");
+                origData=d;
+                callback();
+            });
+        }
+
+        function drawGraph(fieldname,color){
+            // set the dimensions and margins of the graph
+            var margin = { top: 10, right: 30, bottom: 30, left: 60 },
+                width = 460 - margin.left - margin.right,
+                height = 400 - margin.top - margin.bottom;
+
+            // append the svg object to the body of the page
+            var svg = d3.select("#my_dataviz")
+                .append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform",
+                "translate(" + margin.left + "," + margin.top + ")");
+            
+            //Read the data
+            getGreenHouseData("GreenHouseData.json", function(){    
+                let data = [];
+                origData.forEach(function(d){data.push({ date: d3.timeParse("%I:%M%p %b %d, %Y")(d.time), value: d[fieldname] })});
+                
+                // Now I can use this dataset:
+                
+                //console.log(data[0]);
+                // Add X axis --> it is a date format
+                var x = d3.scaleTime()
+                    .domain(d3.extent(data, function (d) { return d.date; }))
+                    .range([0, width]);
+                svg.append("g")
+                    .attr("transform", "translate(0," + height + ")")
+                    .call(d3.axisBottom(x));
+
+                // Add Y axis
+                var y = d3.scaleLinear()
+                    .domain([d3.min(data, function (d) { return +d.value; }), d3.max(data, function (d) { return +d.value; })])
+                    .range([height, 0]);
+                svg.append("g")
+                    .call(d3.axisLeft(y));
+
+                // Add the line
+                svg.append("path")
+                    .datum(data)
+                    .attr("fill", "none")
+                    .attr("stroke", color)
+                    .attr("stroke-width", 1.5)
+                    .attr("d", d3.line()
+                        .x(function (d) { return x(d.date) })
+                        .y(function (d) { return y(d.value) })
+                    );
+                svg.append('text')
+                .attr('y', margin.top)
+                .attr('x', margin.left)
+                .attr('dy', '1.5em') // 1em equals exactly one unit of the currently specified text point size.
+                .style("text-anchor", 'middle')
+                .text(fieldname);
+            
+            });
+        }
+    </script>
+</body>
+
 </html>
