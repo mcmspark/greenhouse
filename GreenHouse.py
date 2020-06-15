@@ -6,8 +6,9 @@ import time
 import threading
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 
-def systemShutdown():
-  subprocess.call("sudo shutdown -h now", shell=True)
+# bad idea
+#def systemShutdown():
+#  subprocess.call("sudo shutdown -h now", shell=True)
 
 currentWifiState=False
 
@@ -17,11 +18,6 @@ def turnOnTheWifi(state):
     cmd=["ifconfig","wlan0", "up" if state else "down"]
     subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     currentWifiState=state
-
-
-def turnOnTheWifi(state):
-  cmd=["ifconfig","wlan0", "up" if state else "down"]
-  subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
 def turnOffTheActLight(state):
   if state:
@@ -50,7 +46,7 @@ def powerSaver(seconds,measurements):
     # no power
     turnOnTheWifi(False)
     return 1800
-  if float(measurements.lux)>100.0:
+  if float(measurements.lux)>10.0:
     # sun is up
     turnOnTheWifi(True)
     return 300
@@ -61,7 +57,7 @@ def powerSaver(seconds,measurements):
     # it is dark, go into low power mode and only update every 20 miutes
     turnOnTheWifi(False)
     return 1200
-
+  return 300
 
 def recordHistory(measurements):
   data = []
