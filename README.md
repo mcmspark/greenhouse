@@ -45,6 +45,10 @@ I followed [this guide](https://www.jeffgeerling.com/blogs/jeff-geerling/raspber
 echo none | sudo tee /sys/class/leds/led0/trigger
 echo 1 | sudo tee /sys/class/leds/led0/brightness
 ```
+I found that I can save another 20 to 25 mA by disabling the Wifi.
+I implemented 2 different stategies to decide when to keep the Wifi on or off.
+1) Wifi Power Schedule (Wifi is on at the top 20 min of every hour and off all night)
+2) Lux triggered Wifi (Wifi is on only in the Day)
 
 I also [diabled bluetooth](https://scribles.net/disabling-bluetooth-on-raspberry-pi/)
 ```
