@@ -12,6 +12,7 @@ from adafruit_ads1x15.analog_in import AnalogIn
 i2c = busio.I2C(board.SCL, board.SDA)
 veml7700 = adafruit_veml7700.VEML7700(i2c)
 ads = ADS.ADS1015(i2c)
+ads.gain = 2/3
   
 def getConnectedWifi():
   cmd=["iwgetid","-a"]
@@ -49,9 +50,9 @@ def getMeasurements():
   inHg = pressure * 0.02952998751
   lux = veml7700.lux
   chan = AnalogIn(ads, ADS.P0)
-  battLevel = (chan.voltage-3.4)*1000.0/7.0
+  battLevel = (chan.voltage-3.2)*1000.0/9.612
   wifiStrength=getWiFiStrength()
-#  4.09 = full 3.1 = empty
+#  4.1612 = full 3.2 = empty
 # print(chan.value, chan.voltage)
   return measurement(timestr, str(round(temperature,1)), str(round(humidity,1)), str(round(pressure,6)), str(round(lux,1)) if lux>100 else str(lux) , round(battLevel,1), wifiStrength)
 
