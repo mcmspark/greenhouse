@@ -73,6 +73,27 @@ and hooked it to 2 3.7v Lithium cells in parallel ([18650](https://www.18650batt
 
 On sunny days the solar cell fully charges the batteries, but in the spring and fall I sometimes have to charge it.
 
+To find the range of battery voltages I charged the battery untill it stopped rising.  Then I rand the unit with no charging until it died.
+
+From this I used 3.2v as 0%
+and 4.096v as 100% (WRONG)
+
+Little did I know the ADS1015 default gain can only measure a max of 4.096.
+after setting the gain to 2/3 (I know right)
+The new max voltage is 4.1612v
+
+From the datasheet:
+<table>
+<tr><td>Table 3. PGA Gain Full-Scale Range</td></tr>
+  <tr><td>PGA SETTING</td><td>FS(V)</td></tr>
+  <tr><td>2/3</td><td>±6.144V(1)</td></tr>
+  <tr><td>1</td><td>±4.096V(1)</td></tr>
+  <tr><td>2</td><td>±2.048V</td></tr>
+  <tr><td>4</td><td>±1.024V</td></tr>
+  <tr><td>8</td><td>±0.512V</td></tr>
+  <tr><td>16</td><td>±0.256V</td></tr>
+</table>
+
 ## running
 Edit /etc/rc.local and add
 ```
